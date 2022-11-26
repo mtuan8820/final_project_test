@@ -1,0 +1,11 @@
+/*
+ * fsm_traffic_light.c
+ *
+ *  Created on: Nov 26, 2022
+ *      Author: legolas
+ */
+
+
+#include "fsm_traffic_light.h"
+#include "global.h"
+#include "scheduler.h"

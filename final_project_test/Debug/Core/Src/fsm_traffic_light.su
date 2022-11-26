@@ -1,0 +1,5 @@
+../Core/Src/fsm_traffic_light.c:19:6:auto_red	8	static
+../Core/Src/fsm_traffic_light.c:47:6:auto_green	8	static
+../Core/Src/fsm_traffic_light.c:69:6:auto_yellow	8	static
+../Core/Src/fsm_traffic_light.c:91:6:setting_red	8	static
+../Core/Src/fsm_traffic_light.c:112:6:setting_green	4	static

@@ -1,0 +1,32 @@
+/*
+ * hardware_layer.c
+ *
+ *  Created on: Nov 26, 2022
+ *      Author: legolas
+ */
+
+#include "hardware_layer.h"
+#include "main.h"
+void set_color_light1(int color){
+	switch (color){
+	case 0://khong mau
+		HAL_GPIO_WritePin(Light, GPIO_Pin, PinState)
+		break;
+	case 1://mau do
+		break;
+	case 2://mau xanh
+		break;
+	case 3://mau vang
+		break;
+	default:
+		break;
+	}
+}
+
+void set_color_light2(int color){
+
+}
+
+void set_color_pedestrian_light(int color){
+
+}

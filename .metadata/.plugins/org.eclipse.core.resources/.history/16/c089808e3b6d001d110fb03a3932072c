@@ -1,0 +1,9 @@
+/*
+ * global.c
+ *
+ *  Created on: Nov 26, 2022
+ *      Author: legolas
+ */
+
+
+#include "global.h"

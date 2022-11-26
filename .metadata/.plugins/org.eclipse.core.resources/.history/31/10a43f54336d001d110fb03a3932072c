@@ -1,0 +1,20 @@
+/*
+ * hardware_layer.c
+ *
+ *  Created on: Nov 26, 2022
+ *      Author: legolas
+ */
+
+#include "hardware_layer.h"
+
+void set_color_light1(int color){
+
+}
+
+void set_color_light2(int color){
+
+}
+
+void set_color_pedestrian_light(int color){
+
+}
