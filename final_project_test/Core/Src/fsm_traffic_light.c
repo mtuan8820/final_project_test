@@ -160,6 +160,7 @@ void fsm(){
 		if (is_button_pressed(0)){
 			HAL_UART_Transmit(&huart2 ,(void*)str,sprintf(str,"auto_red=%d\r\n",
 										red_duration),1000) ;
+			counter1=red_duration;
 			state=AUTO_RED;
 		}
 		break;
