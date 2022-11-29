@@ -26,6 +26,9 @@
 #include "scheduler.h"
 #include "fsm_traffic_light.h"
 #include "software_timer.h"
+#include "stdio.h"
+#include "stdint.h"
+#include "input_reading.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -65,6 +68,8 @@ static void MX_USART2_UART_Init(void);
 void HAL_TIM_PeriodElapsedCallback ( TIM_HandleTypeDef * htim ){
 	SCH_Update();
 	timer1_run();
+	timer2_run();
+	input_reading();
 }
 /* USER CODE END 0 */
 
@@ -99,21 +104,25 @@ int main(void)
   MX_TIM2_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  SCH_Add_Task(auto_red,0,10);
   setTimer1(1000);
   red_duration=5;
   green_duration=3;
   yellow_duration=2;
-  counter1=red_duration;
+  counter1=5;
+  state=AUTO_RED;
+  manual_state=1;
+  pedes_state=10;
   while (1)
   {
+	  pedestrian_fsm();
+	  fsm();
     /* USER CODE END WHILE */
-	  SCH_Dispatch_Tasks();
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -216,7 +225,7 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 115200;
+  huart2.Init.BaudRate = 9600;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
@@ -252,8 +261,8 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, Pedes_light1_Pin|Light1_2_Pin|Light2_2_Pin|Light2_1_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : Pedes_button_Pin Button1_Pin Button2_Pin */
-  GPIO_InitStruct.Pin = Pedes_button_Pin|Button1_Pin|Button2_Pin;
+  /*Configure GPIO pins : Pedes_button_Pin Button1_Pin Button21_Pin */
+  GPIO_InitStruct.Pin = Pedes_button_Pin|Button1_Pin|Button21_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
@@ -265,11 +274,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : Button3_Pin */
-  GPIO_InitStruct.Pin = Button3_Pin;
+  /*Configure GPIO pins : Button3_Pin Button2_Pin */
+  GPIO_InitStruct.Pin = Button3_Pin|Button2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(Button3_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pins : Pedes_light1_Pin Light1_2_Pin Light2_2_Pin Light2_1_Pin */
   GPIO_InitStruct.Pin = Pedes_light1_Pin|Light1_2_Pin|Light2_2_Pin|Light2_1_Pin;

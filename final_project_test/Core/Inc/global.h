@@ -27,4 +27,7 @@ extern int yellow_duration;
 //others
 extern int counter1;//used for traffic light 1
 extern int counter2;//used for traffic light 2
+extern int state;
+extern int manual_state;
+extern int pedes_state;
 #endif /* INC_GLOBAL_H_ */

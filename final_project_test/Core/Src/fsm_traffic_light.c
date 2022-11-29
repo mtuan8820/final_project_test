@@ -16,99 +16,190 @@
 #include "main.h"
 #include "stdint.h"
 char str[50];
-void auto_red(){
-	//hien thi mau do tren den giao thong 1
-	set_color_light1(1);
-	//gui tin hieu uart de hien thi thoi gian
-		//can bo sung them ham trong hardware_layer
-//	HAL_UART_Transmit(&huart2 ,(void*)str,sprintf(str,"!red=%d#\n"
-//		  		,counter1),1000) ;
-	//neu counter1 == 0 chuyen trang thai sang auto_green
-	if (counter1<=0) {
-		counter1=green_duration;//nap lai thoi gian cho duration
-		SCH_Add_Task(auto_green,0,1);
-	}//nguoc lai van o trang thai auto_red
-	else{
+void fsm(){
+	switch(state){
+	case AUTO_RED:
+		//hien thi mau do tren den giao thong 1
+		set_color_light1(1);
+		//dem lui moi 1s
+		if(timer1_flag==1){
+			counter1--;
+			HAL_UART_Transmit(&huart2 ,(void*)str,sprintf(str,"red=%d\r\n"
+								  		,counter1),1000) ;
+			setTimer1(1000);
+		}
+		//neu counter1 == 0 chuyen trang thai sang auto_green
+		if (counter1<=0) {
+			counter1=green_duration;//nap lai thoi gian cho duration
+			state=AUTO_GREEN;
+		}//nguoc lai van o trang thai auto_red
 
-		SCH_Add_Task(auto_red,0,1);
-	}
-	//dem lui moi 1s
-	if(timer1_flag==1){
-		counter1--;
-		setTimer1(1000);
-	}
-	//neu an nut 1 thi chuyen sang trang thai setting
-	if (is_button_pressed(1))
-	{
-		SCH_Add_Task(setting_red,0,1);
-	}
-}
-
-void auto_green(){
+		//neu an nut 1 thi chuyen sang trang thai setting
+		if (is_button_pressed(0))
+			{
+			HAL_UART_Transmit(&huart2 ,(void*)str,sprintf(str,"setting_red=%d\r\n"
+										,counter1),1000);
+			state=SETTING_RED;
+			}
+		break;
+	case AUTO_GREEN:
 		//hien thi mau xanh tren den giao thong 1
 		set_color_light1(2);
 		//gui tin hieu uart de hien thi thoi gian
 			//can bo sung them ham trong hardware_layer
-
+		//dem lui moi 1s
+		if(timer1_flag==1){
+			counter1--;
+			HAL_UART_Transmit(&huart2 ,(void*)str,sprintf(str,"green=%d\r\n"
+											  		,counter1),1000) ;
+			setTimer1(1000);
+		}
 		//neu counter1 == 0 chuyen trang thai sang auto_yellow
 		if (counter1==0) {
 			counter1=yellow_duration;//nap lai thoi gian cho duration
-			SCH_Add_Task(auto_yellow,0,1);
+			state=AUTO_YELLOW;
 		}//nguoc lai van o trang thai auto_green
-		else{
-			counter1--;
-			SCH_Add_Task(auto_green,0,1);
-		}
-		//neu an nut 1 thi chuyen sang trang thai setting_red
-		if (is_button_pressed(1))
-		{
-			SCH_Add_Task(setting_red,0,1);
-		}
-}
 
-void auto_yellow(){
+		//neu an nut 1 thi chuyen sang trang thai setting_red
+		if (is_button_pressed(0))
+		{
+			state=SETTING_RED;
+		}
+		break;
+	case AUTO_YELLOW:
 		//hien thi mau xanh tren den giao thong 1
 		set_color_light1(3);
 		//gui tin hieu uart de hien thi thoi gian
 			//can bo sung them ham trong hardware_layer
-
+		//dem lui moi 1s
+		if(timer1_flag==1){
+			HAL_UART_Transmit(&huart2 ,(void*)str,sprintf(str,"yellow=%d\r\n"
+														  		,counter1),1000) ;
+			counter1--;
+			setTimer1(1000);
+		}
 		//neu counter1 == 0 chuyen trang thai sang auto_red
 		if (counter1==0) {
 			counter1=red_duration;//nap lai thoi gian cho duration
-			SCH_Add_Task(auto_red,0,1);
+			state=AUTO_RED;
 		}//nguoc lai van o trang thai auto_yellow
-		else{
-			counter1--;
-			SCH_Add_Task(auto_yellow,0,1);
-		}
+
 		//neu an nut 1 thi chuyen sang trang thai setting_red
-		if (is_button_pressed(1))
+		if (is_button_pressed(0))
 		{
-			SCH_Add_Task(setting_red,0,1);
+			HAL_UART_Transmit(&huart2 ,(void*)str,sprintf(str,"setting_red=%d\r\n"
+							,red_duration),1000) ;
+			state=SETTING_RED;
+
 		}
+		break;
+	case SETTING_RED:
+		//hien thi mau do tren den giao thong 1
+		set_color_light1(1);
+		//neu an nut 2 thi se tang red_duration
+		if(is_button_pressed(1)){
+			red_duration++;
+			HAL_UART_Transmit(&huart2 ,(void*)str,sprintf(str,"setting_red=%d\r\n"
+							,red_duration),1000) ;
+			if(red_duration>=10) red_duration=0;
+		}
+		//gui tin hieu uart de hien thi thoi gian
+					//can bo sung them ham trong hardware_layer
+
+		//neu an nut 1 thi chuyen sang trang thai setting_green
+		if (is_button_pressed(0)){
+			state=SETTING_GREEN;
+			HAL_UART_Transmit(&huart2 ,(void*)str,sprintf(str,"setting_green=%d\r\n"
+										,green_duration),1000) ;
+			}
+		break;
+	case SETTING_GREEN:
+		//hien thi mau xanh tren den giao thong 1
+		set_color_light1(2);
+		//neu an nut 2 thi se tang red_duration
+		if(is_button_pressed(1)){
+			green_duration++;
+			HAL_UART_Transmit(&huart2 ,(void*)str,sprintf(str,"setting_green=%d\r\n"
+							,green_duration),1000) ;
+			if(green_duration>=10) green_duration=0;
+		}
+		//gui tin hieu uart de hien thi thoi gian
+					//can bo sung them ham trong hardware_layer
+
+		//neu an nut 1 thi chuyen sang trang thai setting_yellow
+		if (is_button_pressed(0)){
+			HAL_UART_Transmit(&huart2 ,(void*)str,sprintf(str,"setting_yellow=%d\r\n"
+										,yellow_duration),1000) ;
+			state=SETTING_YELLOW;
+			}
+		break;
+	case SETTING_YELLOW:
+		//hien thi mau vang tren den giao thong 1
+		set_color_light1(3);
+		//neu an nut 2 thi se tang red_duration
+		if(is_button_pressed(1)){
+			yellow_duration++;
+			HAL_UART_Transmit(&huart2 ,(void*)str,sprintf(str,"setting_yellow=%d\r\n"
+							,yellow_duration),1000) ;
+			if(yellow_duration>=10) yellow_duration=0;
+		}
+		//gui tin hieu uart de hien thi thoi gian
+					//can bo sung them ham trong hardware_layer
+
+		//neu an nut 1 thi chuyen sang trang thai manual
+		if (is_button_pressed(0)){
+			HAL_UART_Transmit(&huart2 ,(void*)str,sprintf(str,"manual\r\n"
+										),1000) ;
+			state=MANUAL;
+			}
+		break;
+	case MANUAL:
+		set_color_light1(manual_state);
+		if (is_button_pressed(1)) manual_state++;
+		if (manual_state>3) manual_state=1;
+		if (is_button_pressed(0)){
+			HAL_UART_Transmit(&huart2 ,(void*)str,sprintf(str,"auto_red=%d\r\n",
+										red_duration),1000) ;
+			state=AUTO_RED;
+		}
+		break;
+	default:
+		break;
+	}
 }
 
-void setting_red(){
-	//hien thi mau do tren den giao thong 1
-	set_color_light1(1);
-
-	//neu an nut 2 thi se tang red_duration
-	if(is_button_pressed(2)){
-		red_duration++;
-		if(red_duration>=10) red_duration=0;
-	}
-	//gui tin hieu uart de hien thi thoi gian
-				//can bo sung them ham trong hardware_layer
-
-	//neu an nut 1 thi chuyen sang trang thai setting_green
-	if (is_button_pressed(1)){
-		SCH_Add_Task(setting_green,0,1);
+void pedestrian_fsm(){
+	switch (pedes_state){
+	case NONE:
+		set_color_pedestrian_light(0);
+		if(is_button_pressed(3)){
+			if(
+				(state==AUTO_RED&&counter1>=3)||
+			     state==SETTING_RED||
+			   ((state==MANUAL)&&(manual_state==1||manual_state==3))
+			) pedes_state = GREEN;
+			else pedes_state=RED;
 		}
-	else {//khong nhan nut 1 thi van o lai trang thai setting_red
-		SCH_Add_Task(setting_red,0,1);
+		break;
+	case GREEN:
+		set_color_pedestrian_light(2);
+		if(
+			(state==AUTO_GREEN)||
+			(state==SETTING_GREEN)||
+			(state==MANUAL&&manual_state==2)
+		) pedes_state=NONE;
+
+		break;
+	case RED:
+		set_color_pedestrian_light(1);
+		if(
+			(state==AUTO_RED&&counter1>=3)
+			||state==SETTING_RED
+			||((state==MANUAL)&&(manual_state==1||manual_state==3))
+		) pedes_state = GREEN;
+
+		break;
+	default:
+		break;
 	}
-}
-
-void setting_green(){
-
 }

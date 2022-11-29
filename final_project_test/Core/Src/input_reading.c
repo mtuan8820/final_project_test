@@ -25,13 +25,31 @@ int is_button_pressed(int index){
 	}
 	return 0;
 }
+void read_pin(int i){
+	switch (i){
+	case 0:
+		KeyReg2[0]=HAL_GPIO_ReadPin(Button1_GPIO_Port, Button1_Pin);
+		break;
+	case 1:
+		KeyReg2[1]=HAL_GPIO_ReadPin(Button2_GPIO_Port, Button2_Pin);
+		break;
+	case 2:
+		KeyReg2[2]=HAL_GPIO_ReadPin(Button3_GPIO_Port, Button3_Pin);
+		break;
+	case 3:
+		KeyReg2[3]=HAL_GPIO_ReadPin(Pedes_button_GPIO_Port, Pedes_button_Pin);
+				break;
+	default:
+		break;
+	}
+}
 
 void input_reading(){
-for(int i=0;i<3;i++){
+for(int i=0;i<4;i++){
 	KeyReg0[i]=KeyReg1[i];
 	KeyReg1[i]=KeyReg2[i];
 	//sua lai ham readpin
-	KeyReg2[i]=HAL_GPIO_ReadPin(GPIOA, Button1_Pin*pow(2,i));
+	read_pin(i);
 	if((KeyReg0[i]==KeyReg1[i])&&(KeyReg1[i]==KeyReg2[i])){
 		if(KeyReg3[i]!=KeyReg2[i]){
 			KeyReg3[i]=KeyReg2[i];
