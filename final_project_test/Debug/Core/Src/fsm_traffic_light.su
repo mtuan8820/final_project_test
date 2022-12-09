@@ -1,0 +1,2 @@
+../Core/Src/fsm_traffic_light.c:19:6:fsm	8	static
+../Core/Src/fsm_traffic_light.c:196:6:pedestrian_fsm	8	static

@@ -1,0 +1,17 @@
+/*
+ * global.h
+ *
+ *  Created on: Nov 26, 2022
+ *      Author: legolas
+ */
+
+#ifndef INC_GLOBAL_H_
+#define INC_GLOBAL_H_
+
+#define INIT 			0
+#define NORMAL 			1
+#define MODIFY_RED		2
+#define MODIFY_AMBER	3
+#define MODIFY_GREEN	4
+
+#endif /* INC_GLOBAL_H_ */
