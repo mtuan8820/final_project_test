@@ -13,6 +13,11 @@
 
 #define NO_OF_BUTTONS 4
 
+#define STATE_IDX	0
+#define SETTING_IDX	1
+#define	MANUAL_IDX	2
+#define PEDES_IDX	3
+
 extern int button_flag[NO_OF_BUTTONS];//flag for reset button
 extern int FlagFor3secPressed[NO_OF_BUTTONS];
 

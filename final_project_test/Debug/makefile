@@ -63,8 +63,8 @@ all: main-build
 main-build: final_project_test.elf secondary-outputs
 
 # Tool invocations
-final_project_test.elf final_project_test.map: $(OBJS) $(USER_OBJS) C:\Users\legolas\STM32CubeIDE\workspace_1.7.0\MCU\final_project_test\final_project_test\STM32F103C6TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "final_project_test.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\legolas\STM32CubeIDE\workspace_1.7.0\MCU\final_project_test\final_project_test\STM32F103C6TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="final_project_test.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+final_project_test.elf final_project_test.map: $(OBJS) $(USER_OBJS) C:\Users\Administrator\Documents\GitHub\final_project_test\final_project_test\STM32F103C6TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "final_project_test.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\Administrator\Documents\GitHub\final_project_test\final_project_test\STM32F103C6TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="final_project_test.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
